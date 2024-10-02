@@ -23,11 +23,11 @@ const {formState, FORM_REF_NAME, isLoading, validationSchema, handleSubmit} = us
         <h2 class="text-2xl font-bold text-center">SIGN UP</h2>
       </template>
       <UForm
+          :ref="FORM_REF_NAME"
           :schema="validationSchema"
           :state="formState"
           class="space-y-4"
           @submit="handleSubmit"
-          :ref="FORM_REF_NAME"
       >
         <UFormGroup label="Name" name="name">
           <UInput v-model="formState.name"/>

@@ -13,7 +13,7 @@ useHead({
   title: "Sign Up",
 });
 
-const {formState, isLoading, validationSchema, handleSubmit} = useSignUp();
+const {formState, FORM_REF_NAME, isLoading, validationSchema, handleSubmit} = useSignUp();
 </script>
 
 <template>
@@ -22,7 +22,13 @@ const {formState, isLoading, validationSchema, handleSubmit} = useSignUp();
       <template #header>
         <h2 class="text-2xl font-bold text-center">SIGN UP</h2>
       </template>
-      <UForm :schema="validationSchema" :state="formState" class="space-y-4" @submit="handleSubmit">
+      <UForm
+          :schema="validationSchema"
+          :state="formState"
+          class="space-y-4"
+          @submit="handleSubmit"
+          :ref="FORM_REF_NAME"
+      >
         <UFormGroup label="Name" name="name">
           <UInput v-model="formState.name"/>
         </UFormGroup>

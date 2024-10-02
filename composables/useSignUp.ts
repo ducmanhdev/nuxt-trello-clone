@@ -30,9 +30,7 @@ export const useSignUp = () => {
                 title: "Sign up was successful",
                 description: "Your account has been created successfully, Redirecting you to the sign in page",
             });
-            await router.push({
-                name: "auth-sign-in",
-            });
+            await router.push("/auth/sign-in");
         } catch (error) {
             if (error.statusMessage === "Validation Error" && error.data?.data?.issues) {
                 return formRef.value?.setErrors(error.data.data.issues.map((err) => ({

@@ -1,3 +1,38 @@
+<script setup lang="ts">
+const colorMode = useColorMode();
+const isDark = computed({
+  get() {
+    return colorMode.value === 'dark'
+  },
+  set() {
+    colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  }
+});
+
+const {data, signOut} = useAuth();
+const userDropdownItems = [
+  [
+    {
+      label: 'Profile',
+      avatar: {
+        src: 'https://avatars.githubusercontent.com/u/739984?v=4'
+      }
+    },
+    {
+      label: 'Settings',
+      icon: 'ion:ios-settings',
+    }
+  ],
+  [
+    {
+      label: 'Sign out',
+      icon: 'ion:log-out-outline',
+      click: signOut
+    }
+  ]
+];
+</script>
+
 <template>
   <div>
     <header class="py-4">
@@ -38,42 +73,3 @@
     </main>
   </div>
 </template>
-
-<script setup lang="ts">
-const colorMode = useColorMode();
-const isDark = computed({
-  get() {
-    return colorMode.value === 'dark'
-  },
-  set() {
-    colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
-  }
-});
-
-const {data, signOut} = useAuth();
-const userDropdownItems = [
-  [
-    {
-      label: 'Profile',
-      avatar: {
-        src: 'https://avatars.githubusercontent.com/u/739984?v=4'
-      }
-    },
-    {
-      label: 'Settings',
-      icon: 'ion:ios-settings',
-    }
-  ],
-  [
-    {
-      label: 'Sign out',
-      icon: 'ion:log-out-outline',
-      click: signOut
-    }
-  ]
-];
-</script>
-
-<style scoped>
-
-</style>

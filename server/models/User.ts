@@ -1,6 +1,5 @@
 import {Document, Schema, model} from "mongoose";
 import bcrypt from "bcryptjs";
-import {generateHash} from "~/utils/hash";
 
 export interface UserDocument extends Document {
     name: string;

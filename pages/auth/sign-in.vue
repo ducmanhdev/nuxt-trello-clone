@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import {useSignIn} from "~/composables/useSignIn";
-
 definePageMeta({
   layout: false,
   auth: {

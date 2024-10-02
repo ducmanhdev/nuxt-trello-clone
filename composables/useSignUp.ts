@@ -15,6 +15,7 @@ export const useSignUp = () => {
     const validationSchema = SignupSchema;
     const isLoading = ref(false);
     const router = useRouter();
+    const toast = useCustomToast();
 
     const handleSubmit = async (
         event: FormSubmitEvent<z.output<typeof SignupSchema>>
@@ -25,7 +26,7 @@ export const useSignUp = () => {
                 method: "POST",
                 body: event.data,
             });
-            useToast().add({
+            toast.success({
                 title: "Sign up was successful",
                 description: "Your account has been created successfully, Redirecting you to the sign in page",
             });
@@ -39,9 +40,7 @@ export const useSignUp = () => {
                     path: err.path[0],
                 })));
             }
-
-            useToast().add({
-                color: "red",
+            toast.error({
                 title: "Error creating account",
                 description: error.data?.message || "An unknown error occurred",
             });

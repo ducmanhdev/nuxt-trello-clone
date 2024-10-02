@@ -11,7 +11,7 @@ export const useSignIn = () => {
     const validationSchema = SignInSchema;
     const isLoading = ref(false);
 
-    const toast = useToast();
+    const toast = useCustomToast();
     const router = useRouter();
     const {signIn} = useAuth();
 
@@ -33,11 +33,8 @@ export const useSignIn = () => {
 
             await router.push("/");
         } catch (e) {
-            toast.add({
-                id: "error",
+            toast.error({
                 title: "Invalid credentials",
-                color: "red",
-                icon: "i-heroicons-information-circle",
             });
         } finally {
             isLoading.value = false;

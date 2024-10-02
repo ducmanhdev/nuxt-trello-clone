@@ -26,7 +26,7 @@ export const useSignUp = () => {
                 body: event.data,
             });
             useToast().add({
-                title: "Account created",
+                title: "Sign up was successful",
                 description: "Your account has been created successfully, Redirecting you to the sign in page",
             });
             await router.push({
@@ -42,7 +42,7 @@ export const useSignUp = () => {
 
             useToast().add({
                 color: "red",
-                title: "Account create error",
+                title: "Error creating account",
                 description: error.data?.message || "An unknown error occurred",
             });
         } finally {

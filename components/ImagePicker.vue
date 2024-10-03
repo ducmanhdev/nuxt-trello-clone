@@ -43,10 +43,6 @@ const model = defineModel();
 const handleSelectImage = (imageUrl: string) => {
   model.value = model.value === imageUrl ? undefined : imageUrl;
 }
-
-watchEffect(() => {
-  console.log(model.value)
-})
 </script>
 
 <template>
@@ -64,6 +60,7 @@ watchEffect(() => {
       <NuxtImg
           :src="image.previewURL"
           class="w-full h-full absolute object-cover"
+          loading="lazy"
       ></NuxtImg>
     </li>
   </ol>

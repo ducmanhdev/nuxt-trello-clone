@@ -120,7 +120,7 @@ provide<HandleEditBoard>("handleEditBoard", handleEditBoard);
           :schema="formSchema"
           :state="formState"
           class="space-y-4"
-          validate-on="submit"
+          :validate-on="['submit']"
           @submit="handleSubmit"
       >
         <UFormGroup label="Board name" name="name">

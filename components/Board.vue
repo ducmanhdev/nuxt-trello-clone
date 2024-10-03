@@ -12,8 +12,10 @@ const emit = defineEmits<{
 <template>
   <UCard class="relative overflow-hidden">
     <NuxtImg
+        v-if="coverImage"
         :src="coverImage"
         :alt="name"
+        placeholder
         class="h-full w-full absolute top-0 left-0 object-cover"
     />
     <div class="h-full w-full absolute top-0 left-0 bg-black/25"></div>

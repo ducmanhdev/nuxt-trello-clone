@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {useBoard, type HandleEditBoard} from "~/composables/useBoard";
+
 const colorMode = useColorMode();
 const isDark = computed({
   get() {
@@ -31,6 +33,26 @@ const userDropdownItems = [
     }
   ]
 ];
+
+const route = useRoute();
+
+const {
+  slideOverTitle,
+  isCreateBoardOpen,
+  handleCreateBoard,
+  handleEditBoard,
+  FORM_REF_NAME,
+  formState,
+  formSchema,
+  isSubmitLoading,
+  handleSubmit,
+  handleTriggerSubmit,
+  isCanDelete,
+  isDeleteLoading,
+  handleDelete
+} = useBoard();
+
+provide<HandleEditBoard>("handleEditBoard", handleEditBoard);
 </script>
 
 <template>
@@ -40,10 +62,20 @@ const userDropdownItems = [
         <div class="logo">TRELLO</div>
         <div class="flex items-center gap-2">
           <UButton
+              v-if="route.name === 'TEST'"
               icon="ion:add"
               size="sm"
               variant="solid"
               label="Create list"
+              @click="() => {}"
+          />
+          <UButton
+
+              icon="ion:add"
+              size="sm"
+              variant="solid"
+              label="Create board"
+              @click="handleCreateBoard"
           />
           <ClientOnly>
             <UButton
@@ -72,4 +104,56 @@ const userDropdownItems = [
       <slot/>
     </main>
   </div>
+
+  <USlideover v-model="isCreateBoardOpen">
+    <UCard
+        class="flex flex-col flex-1"
+        :ui="{
+          body: { base: 'flex-1' },
+          ring: '',
+          divide: 'divide-y divide-gray-100 dark:divide-gray-800'
+        }"
+    >
+      <template #header>{{ slideOverTitle }}</template>
+      <UForm
+          :ref="FORM_REF_NAME"
+          :schema="formSchema"
+          :state="formState"
+          class="space-y-4"
+          validate-on="submit"
+          @submit="handleSubmit"
+      >
+        <UFormGroup label="Board name" name="name">
+          <UInput v-model="formState.name"/>
+        </UFormGroup>
+        <UFormGroup label="Cover image" name="coverImage">
+          <ImagePicker v-model="formState.coverImage"/>
+        </UFormGroup>
+      </UForm>
+      <template #footer>
+        <div class="flex gap-2">
+          <UButton
+              type="button"
+              block
+              class="flex-1"
+              :loading="isSubmitLoading"
+              @click="handleTriggerSubmit"
+          >
+            Submit
+          </UButton>
+          <UButton
+              v-if="isCanDelete"
+              type="button"
+              color="red"
+              block
+              class="flex-1"
+              :loading="isDeleteLoading"
+              @click="handleDelete"
+          >
+            Delete
+          </UButton>
+        </div>
+      </template>
+    </UCard>
+  </USlideover>
 </template>

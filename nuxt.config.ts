@@ -6,12 +6,16 @@ export default defineNuxtConfig({
     mongodbUri: process.env.MONGODB_URI,
     authOrigin: process.env.AUTH_ORIGIN,
     authSecret: process.env.AUTH_SECRET,
+    public: {
+      pixabayApiKey: process.env.PIXABAY_API_KEY
+    },
   },
   modules: [
     '@nuxt/ui',
     '@nuxt/eslint',
     '@nuxt/fonts',
-    '@sidebase/nuxt-auth'
+    '@nuxt/image',
+    '@sidebase/nuxt-auth',
   ],
   eslint: {},
   fonts: {

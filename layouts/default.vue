@@ -133,15 +133,6 @@ provide<HandleEditBoard>("handleEditBoard", handleEditBoard);
       <template #footer>
         <div class="flex gap-2">
           <UButton
-              type="button"
-              block
-              class="flex-1"
-              :loading="isSubmitLoading"
-              @click="handleTriggerSubmit"
-          >
-            Submit
-          </UButton>
-          <UButton
               v-if="isCanDelete"
               type="button"
               color="red"
@@ -151,6 +142,15 @@ provide<HandleEditBoard>("handleEditBoard", handleEditBoard);
               @click="handleDelete"
           >
             Delete
+          </UButton>
+          <UButton
+              type="button"
+              block
+              class="flex-1"
+              :loading="isSubmitLoading"
+              @click="handleTriggerSubmit"
+          >
+            Submit
           </UButton>
         </div>
       </template>

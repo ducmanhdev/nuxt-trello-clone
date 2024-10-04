@@ -2,6 +2,11 @@
 import {type HandleEditBoard} from "~/composables/useBoard";
 import {type BoardDocument} from "~/server/models/Board";
 
+useHead({
+  title: "Nuxt trello"
+})
+
+const router = useRouter();
 const handleEditBoard = inject<HandleEditBoard>("handleEditBoard");
 const {data, refresh} = await useFetch<BoardDocument[]>("/api/boards");
 

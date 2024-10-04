@@ -1,5 +1,5 @@
 import {type Document, Schema, model} from "mongoose";
-import {ListDocument} from "./List";
+import type {ListDocument} from "./List";
 
 export interface BoardDocument extends Document {
     name: string;

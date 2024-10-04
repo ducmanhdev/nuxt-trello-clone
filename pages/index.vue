@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {SLIDE_CONTROLLER_PROVIDE_NAME} from "~/constant";
 import type {SlideController} from "~/types";
-import {type BoardDocument} from "~/server/models/Board";
+import type {BoardDocument} from "~/server/models/Board";
 
 useHead({
   title: "Nuxt trello"
@@ -21,8 +21,8 @@ useListen('refresh-boards', refresh);
           :key="board._id"
           :name="board.name"
           :cover-image="board.coverImage"
-          @on-edit="slideController?.handleEditBoard(board)"
           class="cursor-pointer"
+          @on-edit="slideController?.handleEditBoard(board)"
           @click="router.push({ name: 'boardId', params: { boardId: board._id } })"
       />
     </section>

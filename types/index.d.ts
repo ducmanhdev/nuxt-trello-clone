@@ -1,4 +1,4 @@
-import {type InitialValue as HandleEditBoardArgs} from "~/components/Slide/Board.vue";
+import type {InitialValue as HandleEditBoardArgs} from "~/components/Slide/Board.vue";
 
 export type SlideController = {
     handleEditBoard: (initialValue: HandleEditBoardArgs) => void;

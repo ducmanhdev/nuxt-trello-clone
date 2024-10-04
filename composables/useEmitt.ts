@@ -1,10 +1,6 @@
 import mitt from 'mitt'
 
-type ApplicationEvents = {
-
-};
-
-const emitter = mitt<ApplicationEvents>()
+const emitter = mitt()
 
 export const useEvent = emitter.emit
 export const useListen = emitter.on

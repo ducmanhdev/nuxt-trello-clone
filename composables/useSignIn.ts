@@ -1,5 +1,5 @@
 import type {FormSubmitEvent} from '#ui/types'
-import {z} from "zod";
+import type {z} from "zod";
 import SignInSchema from "~/schemas/SignIn.schema";
 
 export const useSignIn = () => {
@@ -32,7 +32,7 @@ export const useSignIn = () => {
             }
 
             await router.push("/");
-        } catch (e) {
+        } catch {
             toast.error({
                 title: "Invalid credentials",
             });

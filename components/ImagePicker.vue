@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type {AsyncData} from "#app";
 
 const runtimeConfig = useRuntimeConfig()
 const pixabayApiKey = runtimeConfig.public.pixabayApiKey;
@@ -52,16 +51,16 @@ const handleSelectImage = (imageUrl: string) => {
   >
     <li
         v-for="image in data.hits"
+        :key="image.id"
         class="h-24 relative rounded overflow-hidden cursor-pointer outline"
         :class="[model === image.largeImageURL ? 'outline-primary' : 'outline-transparent']"
-        :key="image.id"
         @click="handleSelectImage(image.largeImageURL)"
     >
       <NuxtImg
           :src="image.previewURL"
           class="w-full h-full absolute object-cover"
           loading="lazy"
-      ></NuxtImg>
+      />
     </li>
   </ol>
 </template>

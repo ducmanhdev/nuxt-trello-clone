@@ -12,7 +12,7 @@ const isDark = computed({
   }
 });
 
-const {data, signOut} = useAuth();
+const {signOut} = useAuth();
 const userDropdownItems = [
   [
     {
@@ -106,8 +106,10 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
     <main>
       <slot/>
     </main>
-  </div>
 
-  <SlideBoard :ref="SLIDE_BOARD_REF_NAME"/>
-  <SlideList :ref="SLIDE_LIST_REF_NAME"/>
+    <Teleport to="body">
+      <SlideBoard :ref="SLIDE_BOARD_REF_NAME"/>
+      <SlideList :ref="SLIDE_LIST_REF_NAME"/>
+    </Teleport>
+  </div>
 </template>

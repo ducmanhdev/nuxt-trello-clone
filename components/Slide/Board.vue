@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {Schema} from "mongoose";
+import type {Schema} from "mongoose";
 import BoardSchema from "~/schemas/Board.schema";
 import type {FormSubmitEvent} from "#ui/types";
-import {z} from "zod";
+import type {z} from "zod";
 
 export type InitialValue = z.infer<typeof BoardSchema> & {
   _id: Schema.Types.ObjectId

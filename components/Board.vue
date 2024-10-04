@@ -22,7 +22,7 @@ const emit = defineEmits<{
     <div class="relative grid grid-cols-[1fr_auto] items-center gap-2">
       <p class="text-md">{{ name }}</p>
       <UTooltip text="Edit">
-        <UButton icon="ion:settings" variant="ghost" @click="emit('onEdit')"/>
+        <UButton icon="ion:settings" variant="ghost" @click.stop="emit('onEdit')"/>
       </UTooltip>
     </div>
   </UCard>

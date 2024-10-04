@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import {type HandleEditBoard} from "~/composables/useBoard";
+import {SLIDE_CONTROLLER_PROVIDE_NAME} from "~/constant";
+import type {SlideController} from "~/types";
 import {type BoardDocument} from "~/server/models/Board";
 
 useHead({
@@ -7,9 +8,8 @@ useHead({
 })
 
 const router = useRouter();
-const handleEditBoard = inject<HandleEditBoard>("handleEditBoard");
+const slideController = inject<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME);
 const {data, refresh} = await useFetch<BoardDocument[]>("/api/boards");
-
 useListen('refresh-boards', refresh);
 </script>
 
@@ -21,7 +21,9 @@ useListen('refresh-boards', refresh);
           :key="board._id"
           :name="board.name"
           :cover-image="board.coverImage"
-          @on-edit="handleEditBoard(board)"
+          @on-edit="slideController?.handleEditBoard(board)"
+          class="cursor-pointer"
+          @click="router.push({ name: 'boardId', params: { boardId: board._id } })"
       />
     </section>
   </UContainer>

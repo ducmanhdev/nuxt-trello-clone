@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import {useBoard, type HandleEditBoard} from "~/composables/useBoard";
+import {SLIDE_CONTROLLER_PROVIDE_NAME} from "~/constant";
+import type {SlideController} from "~/types";
 
 const colorMode = useColorMode();
 const isDark = computed({
@@ -35,24 +36,24 @@ const userDropdownItems = [
 ];
 
 const route = useRoute();
+const currentBoardId = computed(() => route.params.boardId);
 
-const {
-  slideOverTitle,
-  isCreateBoardOpen,
-  handleCreateBoard,
+const SLIDE_BOARD_REF_NAME = "SLIDE_BOARD_REF_NAME";
+const slideBoardRef = useTemplateRef(SLIDE_BOARD_REF_NAME);
+const handleEditBoard: SlideController["handleEditBoard"] = (arg) => {
+  slideBoardRef.value?.show(arg);
+}
+
+const SLIDE_LIST_REF_NAME = "SLIDE_LIST_REF_NAME";
+const slideListRef = useTemplateRef(SLIDE_LIST_REF_NAME);
+const handleEditList: SlideController["handleEditList"] = (arg) => {
+  slideListRef.value?.show(arg);
+}
+
+provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
   handleEditBoard,
-  FORM_REF_NAME,
-  formState,
-  formSchema,
-  isSubmitLoading,
-  handleSubmit,
-  handleTriggerSubmit,
-  isCanDelete,
-  isDeleteLoading,
-  handleDelete
-} = useBoard();
-
-provide<HandleEditBoard>("handleEditBoard", handleEditBoard);
+  handleEditList
+});
 </script>
 
 <template>
@@ -62,20 +63,22 @@ provide<HandleEditBoard>("handleEditBoard", handleEditBoard);
         <div class="logo">TRELLO</div>
         <div class="flex items-center gap-2">
           <UButton
-              v-if="route.name === 'TEST'"
+              v-if="route.name === 'boardId'"
               icon="ion:add"
               size="sm"
               variant="solid"
               label="Create list"
-              @click="() => {}"
+              @click="slideListRef?.show({
+                board: currentBoardId
+              })"
           />
           <UButton
-
+              v-else
               icon="ion:add"
               size="sm"
               variant="solid"
               label="Create board"
-              @click="handleCreateBoard"
+              @click="slideBoardRef?.show()"
           />
           <ClientOnly>
             <UButton
@@ -105,55 +108,6 @@ provide<HandleEditBoard>("handleEditBoard", handleEditBoard);
     </main>
   </div>
 
-  <USlideover v-model="isCreateBoardOpen">
-    <UCard
-        class="flex flex-col flex-1"
-        :ui="{
-          body: { base: 'flex-1' },
-          ring: '',
-          divide: 'divide-y divide-gray-100 dark:divide-gray-800'
-        }"
-    >
-      <template #header>{{ slideOverTitle }}</template>
-      <UForm
-          :ref="FORM_REF_NAME"
-          :schema="formSchema"
-          :state="formState"
-          class="space-y-4"
-          :validate-on="['submit']"
-          @submit="handleSubmit"
-      >
-        <UFormGroup label="Board name" name="name">
-          <UInput v-model="formState.name"/>
-        </UFormGroup>
-        <UFormGroup label="Cover image" name="coverImage">
-          <ImagePicker v-model="formState.coverImage"/>
-        </UFormGroup>
-      </UForm>
-      <template #footer>
-        <div class="flex gap-2">
-          <UButton
-              v-if="isCanDelete"
-              type="button"
-              color="red"
-              block
-              class="flex-1"
-              :loading="isDeleteLoading"
-              @click="handleDelete"
-          >
-            Delete
-          </UButton>
-          <UButton
-              type="button"
-              block
-              class="flex-1"
-              :loading="isSubmitLoading"
-              @click="handleTriggerSubmit"
-          >
-            Submit
-          </UButton>
-        </div>
-      </template>
-    </UCard>
-  </USlideover>
+  <SlideBoard :ref="SLIDE_BOARD_REF_NAME"/>
+  <SlideList :ref="SLIDE_LIST_REF_NAME"/>
 </template>

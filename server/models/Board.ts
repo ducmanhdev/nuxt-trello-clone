@@ -1,8 +1,9 @@
-import { Schema, model } from "mongoose";
-import type { Document } from "mongoose";
+import {type Document, Schema, model} from "mongoose";
+import {ListDocument} from "./List";
 
 export interface BoardDocument extends Document {
     name: string;
+    lists: Schema.Types.ObjectId[] | ListDocument[];
     owner: string;
     coverImage: string;
 }
@@ -13,6 +14,12 @@ const boardSchema = new Schema(
             type: String,
             default: "Untitled Board",
         },
+        lists: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "List",
+            },
+        ],
         owner: {
             type: Schema.Types.ObjectId,
             ref: "User",

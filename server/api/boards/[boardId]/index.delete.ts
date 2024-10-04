@@ -1,8 +1,9 @@
 import {Board} from "~/server/models/Board";
+import type {UserDocument} from "~/server/models/User";
 
 export default defineEventHandler(async (event) => {
+    const user = event.context.user as UserDocument;
     const boardId = getRouterParam(event, "boardId");
-    const user = event.context.user;
 
     const deletedBoard = await Board.findOneAndDelete({
         _id: boardId,

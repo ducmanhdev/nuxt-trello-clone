@@ -35,8 +35,8 @@ const handleSort = async () => {
       :scroll-sensitivity="500"
       :force-fallback="true"
       filter=".ignore-drag"
-      @sort="handleSort"
       class="flex h-[80vh] overflow-x-auto gap-4 pb-2 list"
+      @sort="handleSort"
   >
     <template #item="{ element }">
       <div class="flex">

@@ -17,7 +17,11 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@sidebase/nuxt-auth',
   ],
-  eslint: {},
+  eslint: {
+    config: {
+      stylistic: true
+    }
+  },
   fonts: {
     provider: 'google'
   },

@@ -1,5 +1,5 @@
 import type {FormSubmitEvent} from '#ui/types'
-import {z} from "zod";
+import type {z} from "zod";
 import SignupSchema from "~/schemas/SignUp.schema";
 
 export const useSignUp = () => {

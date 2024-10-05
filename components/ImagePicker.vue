@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-
 const runtimeConfig = useRuntimeConfig()
-const pixabayApiKey = runtimeConfig.public.pixabayApiKey;
+const pixabayApiKey = runtimeConfig.public.pixabayApiKey
 
 type Data = {
   total: number
@@ -34,32 +33,32 @@ type Hit = {
   userImageURL: string
 }
 
-const {data} = await useFetch<Data>(
-    `https://pixabay.com/api/?key=${pixabayApiKey}&image_type=photo&orientation=horizontal&per_page=32`
-);
+const { data } = await useFetch<Data>(
+  `https://pixabay.com/api/?key=${pixabayApiKey}&image_type=photo&orientation=horizontal&per_page=32`,
+)
 
-const model = defineModel();
-const handleSelectImage = (imageUrl: string) => {
-  model.value = model.value === imageUrl ? undefined : imageUrl;
+const model = defineModel()
+function handleSelectImage(imageUrl: string) {
+  model.value = model.value === imageUrl ? undefined : imageUrl
 }
 </script>
 
 <template>
   <ol
-      v-if="data.hits"
-      class="grid grid-cols-3 gap-2 overflow-y-auto h-96 p-1"
+    v-if="data.hits"
+    class="grid grid-cols-3 gap-2 overflow-y-auto h-96 p-1"
   >
     <li
-        v-for="image in data.hits"
-        :key="image.id"
-        class="h-24 relative rounded overflow-hidden cursor-pointer outline"
-        :class="[model === image.largeImageURL ? 'outline-primary' : 'outline-transparent']"
-        @click="handleSelectImage(image.largeImageURL)"
+      v-for="image in data.hits"
+      :key="image.id"
+      class="h-24 relative rounded overflow-hidden cursor-pointer outline"
+      :class="[model === image.largeImageURL ? 'outline-primary' : 'outline-transparent']"
+      @click="handleSelectImage(image.largeImageURL)"
     >
       <NuxtImg
-          :src="image.previewURL"
-          class="w-full h-full absolute object-cover"
-          loading="lazy"
+        :src="image.previewURL"
+        class="w-full h-full absolute object-cover"
+        loading="lazy"
       />
     </li>
   </ol>

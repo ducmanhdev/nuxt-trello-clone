@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     authOrigin: process.env.AUTH_ORIGIN,
     authSecret: process.env.AUTH_SECRET,
     public: {
-      pixabayApiKey: process.env.PIXABAY_API_KEY
+      pixabayApiKey: process.env.PIXABAY_API_KEY,
     },
   },
   modules: [
@@ -19,19 +19,19 @@ export default defineNuxtConfig({
   ],
   eslint: {
     config: {
-      stylistic: true
-    }
+      standalone: false,
+    },
   },
   fonts: {
-    provider: 'google'
+    provider: 'google',
   },
   colorMode: {
-    preference: 'light'
+    preference: 'light',
   },
   auth: {
     provider: {
-      type: "authjs",
-      addDefaultCallbackUrl: true
+      type: 'authjs',
+      addDefaultCallbackUrl: true,
     },
     globalAppMiddleware: true,
   },

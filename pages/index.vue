@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import {SLIDE_CONTROLLER_PROVIDE_NAME} from "~/constant";
-import type {SlideController} from "~/types";
-import type {BoardDocument} from "~/server/models/Board";
+import { SLIDE_CONTROLLER_PROVIDE_NAME } from '~/constant'
+import type { BoardDocument } from '~/server/models/Board'
+import type { SlideController } from '~/types'
 
 useHead({
-  title: "Nuxt trello"
+  title: 'Nuxt trello',
 })
 
-const router = useRouter();
-const slideController = inject<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME);
-const {data, refresh} = await useFetch<BoardDocument[]>("/api/boards");
-useListen('refresh-boards', refresh);
+const router = useRouter()
+const slideController = inject<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME)
+const { data, refresh } = await useFetch<BoardDocument[]>('/api/boards')
+useListen('refresh-boards', refresh)
 </script>
 
 <template>
   <UContainer>
     <section class="grid grid-cols-4 gap-4">
       <Board
-          v-for="board in data as BoardDocument[]"
-          :key="board._id"
-          :name="board.name"
-          :cover-image="board.coverImage"
-          class="cursor-pointer"
-          @on-edit="slideController?.handleEditBoard(board)"
-          @click="router.push({ name: 'boardId', params: { boardId: board._id } })"
+        v-for="board in data as BoardDocument[]"
+        :key="board._id"
+        :name="board.name"
+        :cover-image="board.coverImage"
+        class="cursor-pointer"
+        @on-edit="slideController?.handleEditBoard(board)"
+        @click="router.push({ name: 'boardId', params: { boardId: board._id } })"
       />
     </section>
   </UContainer>

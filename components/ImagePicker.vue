@@ -38,7 +38,7 @@ const { data } = await useFetch<Data>(
 )
 
 const model = defineModel()
-function handleSelectImage(imageUrl: string) {
+const handleSelectImage = (imageUrl: string) => {
   model.value = model.value === imageUrl ? undefined : imageUrl
 }
 </script>

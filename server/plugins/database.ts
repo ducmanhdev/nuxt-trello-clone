@@ -6,7 +6,7 @@ export default defineNitroPlugin(async () => {
     await mongoose.connect(config.mongodbUri)
     console.log('Mongodb connected')
   }
-  catch (error) {
+  catch (error: any) {
     console.log('Mongodb connect error', error.message)
   }
 })

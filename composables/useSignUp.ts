@@ -6,8 +6,9 @@ export const useSignUp = () => {
   const router = useRouter()
   const toast = useCustomToast()
 
-  const formRef = ref<Form>()
-  const handleSetFormRef = el => formRef.value = el
+  type InferSchema = z.infer<typeof SignupSchema>
+  const formRef = ref<Form<InferSchema>>()
+  const handleSetFormRef = (el: Form<InferSchema>) => formRef.value = el
 
   const formState = ref({
     name: undefined,
@@ -32,9 +33,9 @@ export const useSignUp = () => {
       })
       await router.push('/auth/sign-in')
     }
-    catch (error) {
+    catch (error: any) {
       if (error.statusMessage === 'Validation Error' && error.data?.data?.issues) {
-        return formRef.value?.setErrors(error.data.data.issues.map(err => ({
+        return formRef.value?.setErrors(error.data.data.issues.map((err: any) => ({
           message: err.message,
           path: err.path[0],
         })))

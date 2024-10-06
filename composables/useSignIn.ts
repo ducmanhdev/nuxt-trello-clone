@@ -1,6 +1,6 @@
 import type { FormSubmitEvent } from '#ui/types'
 import type { z } from 'zod'
-import SignInSchema from '~/schemas/SignIn.schema'
+import SignInSchema from '~/schemas/SignIn.Schema'
 
 export const useSignIn = () => {
   const formState = ref({

@@ -1,4 +1,4 @@
-import SignUpSchema from '~/schemas/SignUp.schema'
+import SignUpSchema from '~/schemas/SignUp.Schema'
 import { User } from '~/server/models/User'
 
 export default defineEventHandler(async (event) => {

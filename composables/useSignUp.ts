@@ -1,6 +1,6 @@
 import type { Form, FormSubmitEvent } from '#ui/types'
 import type { z } from 'zod'
-import SignupSchema from '~/schemas/SignUp.schema'
+import SignupSchema from '~/schemas/SignUp.Schema'
 
 export const useSignUp = () => {
   const router = useRouter()

@@ -60,9 +60,9 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
   <div>
     <header class="py-4">
       <UContainer class="flex justify-between items-center">
-        <div class="logo">
+        <RouterLink to="/">
           TRELLO
-        </div>
+        </RouterLink>
         <div class="flex items-center gap-2">
           <UButton
             v-if="route.name === 'boardId'"

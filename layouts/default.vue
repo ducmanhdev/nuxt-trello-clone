@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { LazySlideBoard, LazySlideList } from '#components'
 import { SLIDE_CONTROLLER_PROVIDE_NAME } from '~/constant'
 import type { SlideController } from '~/types'
 
@@ -38,14 +39,14 @@ const userDropdownItems = [
 const route = useRoute()
 const currentBoardId = computed(() => route.params.boardId)
 
-const SLIDE_BOARD_REF_NAME = 'SLIDE_BOARD_REF_NAME'
-const slideBoardRef = useTemplateRef(SLIDE_BOARD_REF_NAME)
+const slideBoardRef = ref<InstanceType<typeof LazySlideBoard>>()
+const handleSetEditBoardRef = el => slideBoardRef.value = el
 const handleEditBoard: SlideController['handleEditBoard'] = (arg) => {
   slideBoardRef.value?.show(arg)
 }
 
-const SLIDE_LIST_REF_NAME = 'SLIDE_LIST_REF_NAME'
-const slideListRef = useTemplateRef(SLIDE_LIST_REF_NAME)
+const slideListRef = ref<InstanceType<typeof LazySlideList>>()
+const handleSetEditListRef = el => slideListRef.value = el
 const handleEditList: SlideController['handleEditList'] = (arg) => {
   slideListRef.value?.show(arg)
 }
@@ -110,8 +111,8 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
     </main>
 
     <Teleport to="body">
-      <SlideBoard :ref="SLIDE_BOARD_REF_NAME" />
-      <SlideList :ref="SLIDE_LIST_REF_NAME" />
+      <LazySlideBoard :ref="handleSetEditBoardRef" />
+      <LazySlideList :ref="handleSetEditListRef" />
     </Teleport>
   </div>
 </template>

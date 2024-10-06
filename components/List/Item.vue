@@ -57,7 +57,7 @@ const handleSetSlideCardRef = el => slideCardRef.value = el
     v-bind="cardProps"
   >
     <template #header>
-      <div class="grid grid-cols-[1fr_auto] items-center gap-2">
+      <div class="list-header grid grid-cols-[1fr_auto] items-center gap-2 cursor-grab">
         <p class="text-md">
           {{ list.name }}
         </p>

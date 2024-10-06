@@ -1,4 +1,4 @@
-import CardSchema from '~/schemas/Card.Schema'
+import CardSchema from '~/schemas/Card.schema'
 import { Card } from '~/server/models/Card'
 import type { UserDocument } from '~/server/models/User'
 

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import SignInSchema from './SignIn.Schema'
+import SignInSchema from './SignIn.schema'
 
 export default SignInSchema.extend({
   name: z

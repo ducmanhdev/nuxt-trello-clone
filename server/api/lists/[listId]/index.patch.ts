@@ -1,4 +1,4 @@
-import ListSchema from '~/schemas/List.Schema'
+import ListSchema from '~/schemas/List.schema'
 import { List } from '~/server/models/List'
 import type { UserDocument } from '~/server/models/User'
 

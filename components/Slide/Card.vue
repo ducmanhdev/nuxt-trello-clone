@@ -2,7 +2,7 @@
 import type { FormSubmitEvent } from '#ui/types'
 import type { Schema } from 'mongoose'
 import type { z } from 'zod'
-import CardSchema from '~/schemas/Card.Schema'
+import CardSchema from '~/schemas/Card.schema'
 
 const emit = defineEmits<{
   (e: 'refresh'): void

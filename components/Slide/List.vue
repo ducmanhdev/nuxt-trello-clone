@@ -2,7 +2,7 @@
 import type { FormSubmitEvent } from '#ui/types'
 import type { Schema } from 'mongoose'
 import type { z } from 'zod'
-import ListSchema from '~/schemas/List.Schema'
+import ListSchema from '~/schemas/List.schema'
 
 export type InitialValue = z.infer<typeof ListSchema> & {
   _id: Schema.Types.ObjectId

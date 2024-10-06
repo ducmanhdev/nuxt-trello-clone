@@ -11,7 +11,7 @@ useHead({
   title: 'Sign In',
 })
 
-const { formState, isLoading, validationSchema, handleSubmit } = useSignIn()
+const { formState, formSchema, isSubmitLoading, handleSubmit } = useSignIn()
 </script>
 
 <template>
@@ -22,14 +22,19 @@ const { formState, isLoading, validationSchema, handleSubmit } = useSignIn()
           SIGN IN
         </h2>
       </template>
-      <UForm :schema="validationSchema" :state="formState" class="space-y-4" @submit="handleSubmit">
+      <UForm
+        :schema="formSchema"
+        :state="formState"
+        class="space-y-4"
+        @submit="handleSubmit"
+      >
         <UFormGroup label="Email" name="email">
           <UInput v-model="formState.email" />
         </UFormGroup>
         <UFormGroup label="Password" name="password">
           <UInput v-model="formState.password" type="password" />
         </UFormGroup>
-        <UButton type="submit" block :loading="isLoading">
+        <UButton type="submit" block :loading="isSubmitLoading">
           Submit
         </UButton>
       </UForm>

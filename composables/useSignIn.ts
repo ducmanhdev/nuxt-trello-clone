@@ -3,23 +3,22 @@ import type { z } from 'zod'
 import SignInSchema from '~/schemas/SignIn.schema'
 
 export const useSignIn = () => {
-  const formState = reactive({
+  const formState = ref({
     email: undefined,
     password: undefined,
   })
-
-  const validationSchema = SignInSchema
-  const isLoading = ref(false)
+  const formSchema = SignInSchema
+  const isSubmitLoading = ref(false)
 
   const toast = useCustomToast()
   const router = useRouter()
   const { signIn } = useAuth()
 
   const handleSubmit = async (
-    event: FormSubmitEvent<z.output<typeof validationSchema>>,
+    event: FormSubmitEvent<z.output<typeof formSchema>>,
   ) => {
     try {
-      isLoading.value = true
+      isSubmitLoading.value = true
 
       const { error } = await signIn('credentials', {
         redirect: false,
@@ -39,14 +38,14 @@ export const useSignIn = () => {
       })
     }
     finally {
-      isLoading.value = false
+      isSubmitLoading.value = false
     }
   }
 
   return {
     formState,
-    isLoading,
-    validationSchema,
+    isSubmitLoading,
+    formSchema,
     handleSubmit,
   }
 }

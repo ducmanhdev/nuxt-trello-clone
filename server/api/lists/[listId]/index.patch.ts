@@ -5,7 +5,7 @@ import type { UserDocument } from '~/server/models/User'
 export default defineEventHandler(async (event) => {
   const user = event.context.user as UserDocument
   const listId = getRouterParam(event, 'listId')
-  const body = await readValidatedBody(event, body => ListSchema.parse(body))
+  const body = await readValidatedBody(event, body => ListSchema.partial().parse(body))
 
   const updatedLists = await List.findOneAndUpdate(
     { _id: listId, owner: user._id },

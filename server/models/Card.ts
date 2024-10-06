@@ -1,21 +1,16 @@
 import { type Document, model, Schema } from 'mongoose'
 
 export interface CardDocument extends Document {
-  title: string
-  description: string
+  name: string
   owner: string
   list: string
 }
 
 const cardSchema = new Schema(
   {
-    title: {
+    name: {
       type: String,
       required: [true, 'Title is required'],
-    },
-    description: {
-      type: String,
-      default: null,
     },
     owner: {
       type: Schema.Types.ObjectId,

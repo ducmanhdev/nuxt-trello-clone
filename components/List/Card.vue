@@ -8,9 +8,16 @@ defineProps<{
 
 <template>
   <div
-    class="p-2 border rounded-lg text-sm bg-white dark:bg-gray-800 dark:border-gray-700 cursor-grab"
+    class="cursor-pointer p-2 border rounded-lg text-sm bg-white dark:bg-gray-800 dark:border-gray-700 grid grid-cols-[1fr_auto] items-center gap-2"
   >
-    {{ card.title }}
+    <span>{{ card.name }}</span>
+    <UButton
+      size="2xs"
+      variant="ghost"
+      icon="ion:move-sharp"
+      class="drag-button cursor-grab"
+      @click.stop
+    />
   </div>
 </template>
 

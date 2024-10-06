@@ -2,55 +2,58 @@
 import type { FormSubmitEvent } from '#ui/types'
 import type { Schema } from 'mongoose'
 import type { z } from 'zod'
-import ListSchema from '~/schemas/List.Schema'
+import CardSchema from '~/schemas/Card.Schema'
 
-export type InitialValue = z.infer<typeof ListSchema> & {
-  _id: Schema.Types.ObjectId
-}
+const emit = defineEmits<{
+  (e: 'refresh'): void
+}>()
 
+const formSchema = CardSchema.omit({
+  list: true,
+})
+
+export type InitialValue = z.infer<typeof formSchema>
 const cardProps = useCardProps()
 const toast = useCustomToast()
 
 const currentListId = ref<Schema.Types.ObjectId>(undefined)
+const currentCardId = ref<Schema.Types.ObjectId>(undefined)
 const slideOverTitle = computed(() => {
-  return currentListId.value ? 'Update list' : 'Create list'
+  return currentCardId.value ? 'Update card' : 'Create card'
 })
 
-const INITIAL_FORM_STATE = {
+const INITIAL_FORM_STATE: InitialValue = {
   name: undefined,
-  board: undefined,
 }
-const formState = ref({ ...INITIAL_FORM_STATE })
+const formState = ref<InitialValue>({ ...INITIAL_FORM_STATE })
 
-const FORM_REF_NAME = 'LIST_FORM'
+const FORM_REF_NAME = 'CARD_FORM'
 const formRef = useTemplateRef(FORM_REF_NAME)
-const formSchema = ListSchema
 const isCreateBoardOpen = ref(false)
 
 const isSubmitLoading = ref(false)
 const handleSubmit = async (
   event: FormSubmitEvent<z.output<typeof formSchema>>,
 ) => {
-  const isUpdate = currentListId.value
   try {
     isSubmitLoading.value = true
-    if (isUpdate) {
-      await $fetch(`/api/lists/${currentListId.value}`, {
+    if (currentCardId.value) {
+      await $fetch(`/api/lists/${currentListId.value}/cards/${currentCardId.value}`, {
         method: 'PATCH',
         body: event.data,
       })
     }
     else {
-      await $fetch('/api/lists', {
+      await $fetch(`/api/lists/${currentListId.value}/cards`, {
         method: 'POST',
         body: event.data,
       })
     }
     toast.success({
-      title: `List was ${isUpdate ? 'updated' : 'created'} successful`,
+      title: `Card was ${currentCardId.value ? 'updated' : 'created'} successful`,
     })
     isCreateBoardOpen.value = false
-    useEvent('refresh-lists')
+    emit('refresh')
   }
   catch (error) {
     if (error.statusMessage === 'Validation Error' && error.data?.data?.issues) {
@@ -60,7 +63,7 @@ const handleSubmit = async (
       })))
     }
     toast.error({
-      title: `Error ${isUpdate ? 'updating' : 'creating'} list`,
+      title: `Error ${isUpdate ? 'updating' : 'creating'} card`,
       description: error.data?.message || 'An unknown error occurred',
     })
   }
@@ -69,21 +72,20 @@ const handleSubmit = async (
   }
 }
 
-const isCanDelete = computed(() => currentListId.value)
 const isDeleteLoading = ref(false)
 const handleDelete = async () => {
   if (!currentListId.value)
     return
   try {
     isDeleteLoading.value = true
-    await $fetch(`/api/lists/${currentListId.value}`, {
+    await $fetch(`/api/lists/${currentListId.value}/cards/${currentCardId.value}`, {
       method: 'DELETE',
     })
     toast.success({
-      title: 'List was delete successful',
+      title: 'Card was delete successful',
     })
     isCreateBoardOpen.value = false
-    useEvent('refresh-lists')
+    emit('refresh')
   }
   catch (error) {
     toast.error({
@@ -96,16 +98,19 @@ const handleDelete = async () => {
   }
 }
 
-const show = (initialValue?: InitialValue) => {
+const show = (
+  listId: typeof currentListId,
+  cardId: typeof currentCardId,
+  initialValue?: InitialValue,
+) => {
   if (initialValue) {
-    currentListId.value = initialValue._id
     formState.value.name = initialValue.name
-    formState.value.board = initialValue.board
   }
   else {
-    currentListId.value = undefined
     formState.value = { ...INITIAL_FORM_STATE }
   }
+  currentListId.value = listId
+  currentCardId.value = cardId
   isCreateBoardOpen.value = true
 }
 
@@ -128,14 +133,14 @@ defineExpose({
         :validate-on="['submit']"
         @submit="handleSubmit"
       >
-        <UFormGroup label="List name" name="name">
+        <UFormGroup label="Card name" name="name">
           <UInput v-model="formState.name" />
         </UFormGroup>
       </UForm>
       <template #footer>
         <div class="flex gap-2">
           <UButton
-            v-if="isCanDelete"
+            v-if="currentCardId"
             type="button"
             color="red"
             block
@@ -159,7 +164,3 @@ defineExpose({
     </UCard>
   </USlideover>
 </template>
-
-<style scoped>
-
-</style>

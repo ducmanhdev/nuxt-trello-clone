@@ -16,7 +16,7 @@ useListen('refresh-boards', refresh)
 <template>
   <UContainer>
     <section class="grid grid-cols-4 gap-4">
-      <Board
+      <BoardCard
         v-for="board in data as BoardDocument[]"
         :key="board._id"
         :name="board.name"

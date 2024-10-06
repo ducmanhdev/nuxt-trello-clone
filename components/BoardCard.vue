@@ -20,7 +20,7 @@ const emit = defineEmits<{
     />
     <div class="h-full w-full absolute top-0 left-0 bg-black/25" />
     <div class="relative grid grid-cols-[1fr_auto] items-center gap-2">
-      <p class="text-md">
+      <p class="text-md text-white">
         {{ name }}
       </p>
       <UTooltip text="Edit">

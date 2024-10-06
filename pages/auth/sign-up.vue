@@ -11,7 +11,7 @@ useHead({
   title: 'Sign Up',
 })
 
-const { formState, FORM_REF_NAME, isLoading, validationSchema, handleSubmit } = useSignUp()
+const { handleSetFormRef, formState, formSchema, isSubmitLoading, handleSubmit } = useSignUp()
 </script>
 
 <template>
@@ -23,8 +23,8 @@ const { formState, FORM_REF_NAME, isLoading, validationSchema, handleSubmit } = 
         </h2>
       </template>
       <UForm
-        :ref="FORM_REF_NAME"
-        :schema="validationSchema"
+        :ref="handleSetFormRef"
+        :schema="formSchema"
         :state="formState"
         class="space-y-4"
         @submit="handleSubmit"
@@ -41,7 +41,7 @@ const { formState, FORM_REF_NAME, isLoading, validationSchema, handleSubmit } = 
         <UFormGroup label="Confirm password" name="confirmPassword">
           <UInput v-model="formState.confirmPassword" type="password" />
         </UFormGroup>
-        <UButton type="submit" block :loading="isLoading">
+        <UButton type="submit" block :loading="isSubmitLoading">
           Submit
         </UButton>
       </UForm>

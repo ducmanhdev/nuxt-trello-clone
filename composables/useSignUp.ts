@@ -1,27 +1,27 @@
-import type { FormSubmitEvent } from '#ui/types'
+import type { Form, FormSubmitEvent } from '#ui/types'
 import type { z } from 'zod'
 import SignupSchema from '~/schemas/SignUp.schema'
 
 export const useSignUp = () => {
-  const formState = reactive({
+  const router = useRouter()
+  const toast = useCustomToast()
+
+  const formRef = ref<Form>()
+  const handleSetFormRef = el => formRef.value = el
+
+  const formState = ref({
     name: undefined,
     email: undefined,
     password: undefined,
     confirmPassword: undefined,
   })
-
-  const FORM_REF_NAME = 'signUpForm'
-  const formRef = useTemplateRef(FORM_REF_NAME)
-  const validationSchema = SignupSchema
-  const isLoading = ref(false)
-  const router = useRouter()
-  const toast = useCustomToast()
-
+  const formSchema = SignupSchema
+  const isSubmitLoading = ref(false)
   const handleSubmit = async (
     event: FormSubmitEvent<z.output<typeof SignupSchema>>,
   ) => {
     try {
-      isLoading.value = true
+      isSubmitLoading.value = true
       await $fetch('/api/auth/sign-up', {
         method: 'POST',
         body: event.data,
@@ -45,15 +45,15 @@ export const useSignUp = () => {
       })
     }
     finally {
-      isLoading.value = false
+      isSubmitLoading.value = false
     }
   }
 
   return {
+    handleSetFormRef,
     formState,
-    FORM_REF_NAME,
-    isLoading,
-    validationSchema,
+    formSchema,
+    isSubmitLoading,
     handleSubmit,
   }
 }

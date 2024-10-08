@@ -1,3 +1,4 @@
+import type Stripe from 'stripe'
 import bcrypt from 'bcryptjs'
 import { type Document, model, Schema } from 'mongoose'
 import { generateHash } from '~/utils/hash'
@@ -6,8 +7,16 @@ export interface UserDocument extends Document<Schema.Types.ObjectId> {
   name: string
   email: string
   password: string
+  stripeCustomerId?: string
+  subscription: {
+    id: string
+    status: string
+    priceId: string
+  }
+  hasActiveSubscription: boolean
 
   comparePassword: (password: string) => Promise<boolean>
+  updateSubscription: (data: Stripe.Subscription) => Promise<void>
 }
 
 const userSchema = new Schema(
@@ -24,6 +33,24 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: [true, 'Password is required'],
+    },
+    stripeCustomerId: {
+      type: String,
+      default: null,
+    },
+    subscription: {
+      id: {
+        type: String,
+        default: null,
+      },
+      status: {
+        type: String,
+        default: null,
+      },
+      priceId: {
+        type: String,
+        default: null,
+      },
     },
   },
   {
@@ -46,5 +73,21 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePassword = async function (password: string) {
   return await bcrypt.compare(password, this.password)
 }
+
+userSchema.methods.updateSubscription = async function (
+  data: Stripe.Subscription,
+) {
+  this.subscription.id = data.id
+  this.subscription.status = data.status
+  this.subscription.priceId = data.items.data[0].price.id
+
+  await this.save()
+}
+
+userSchema.virtual('hasActiveSubscription').get(function (this: UserDocument) {
+  const allowedStatuses = ['active', 'trialing']
+
+  return allowedStatuses.includes(this.subscription.status)
+})
 
 export const User = model<UserDocument>('User', userSchema)

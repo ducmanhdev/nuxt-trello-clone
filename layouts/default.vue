@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { LazySlideBoard, LazySlideList } from '#components'
 import { SLIDE_CONTROLLER_PROVIDE_NAME } from '~/constant'
+import type { UserDocument } from '~/server/models/User'
 import type { SlideController } from '~/types'
+
+const { handleSubscribe, handleAccessPortal } = useSubscription()
 
 const colorMode = useColorMode()
 const isDark = computed({
@@ -13,7 +16,11 @@ const isDark = computed({
   },
 })
 
-const { signOut } = useAuth()
+const { data, signOut } = useAuth()
+console.log(data.value);
+
+const isUserHasSubscripton = computed(() => (data.value?.user as UserDocument)?.hasActiveSubscription)
+
 const userDropdownItems = [
   [
     {
@@ -94,6 +101,13 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
               <div class="w-8 h-8" />
             </template>
           </ClientOnly>
+          <UButton
+            variant="ghost"
+            color="yellow"
+            :disabled="isUserHasSubscripton"
+            :icon="isUserHasSubscripton ? 'ion:ios-star' : 'ion:ios-star-outline'"
+            @click="handleSubscribe"
+          />
           <UDropdown
             :items="userDropdownItems"
             :popper="{ placement: 'bottom-start' }"

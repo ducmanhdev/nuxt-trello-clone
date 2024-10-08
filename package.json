@@ -20,6 +20,7 @@
     "mongoose": "^8.7.0",
     "next-auth": "4.21.1",
     "nuxt": "^3.13.2",
+    "stripe": "^17.1.0",
     "vue": "latest",
     "vue-router": "latest",
     "vuedraggable": "4.1.0",

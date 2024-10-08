@@ -1,41 +1,32 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types'
-import type { Schema } from 'mongoose'
+import type { Form, FormSubmitEvent } from '#ui/types'
 import type { z } from 'zod'
+import { FETCH_BOARD_KEY } from '~/constant'
 import BoardSchema from '~/schemas/Board.schema'
-
-export type InitialValue = z.infer<typeof BoardSchema> & {
-  _id: Schema.Types.ObjectId
-}
 
 const cardProps = useCardProps()
 const toast = useCustomToast()
 
-const currentBoardId = ref<Schema.Types.ObjectId>(undefined)
-const slideOverTitle = computed(() => {
-  return currentBoardId.value ? 'Update board' : 'Create board'
-})
-
-const INITIAL_FORM_STATE = {
-  name: undefined,
-  coverImage: undefined,
-}
-const formState = ref({ ...INITIAL_FORM_STATE })
-
-const FORM_REF_NAME = 'BOARD_FORM'
-const formRef = useTemplateRef(FORM_REF_NAME)
-const formSchema = BoardSchema
-
 const isCreateBoardOpen = ref(false)
+
+const boardId = ref<string>()
+type SchemaInfer = z.infer<typeof BoardSchema>
+const INITIAL_FORM_STATE: SchemaInfer = {
+  name: '',
+  coverImage: '',
+}
+const formState = ref<SchemaInfer>({ ...INITIAL_FORM_STATE })
+const formSchema = BoardSchema
+const formRef = ref<Form<SchemaInfer>>()
+
 const isSubmitLoading = ref(false)
 const handleSubmit = async (
   event: FormSubmitEvent<z.output<typeof formSchema>>,
 ) => {
-  const isUpdate = currentBoardId.value
   try {
     isSubmitLoading.value = true
-    if (isUpdate) {
-      await $fetch(`/api/boards/${currentBoardId.value}`, {
+    if (boardId.value) {
+      await $fetch(`/api/boards/${boardId.value}`, {
         method: 'PATCH',
         body: event.data,
       })
@@ -47,20 +38,20 @@ const handleSubmit = async (
       })
     }
     toast.success({
-      title: `Board was ${isUpdate ? 'updated' : 'created'} successful`,
+      title: `Board was ${boardId.value ? 'updated' : 'created'} successful`,
     })
     isCreateBoardOpen.value = false
-    useEvent('refresh-boards')
+    refreshNuxtData(FETCH_BOARD_KEY)
   }
-  catch (error) {
+  catch (error: any) {
     if (error.statusMessage === 'Validation Error' && error.data?.data?.issues) {
-      return formRef.value?.setErrors(error.data.data.issues.map(err => ({
+      return formRef.value?.setErrors(error.data.data.issues.map((err: any) => ({
         message: err.message,
         path: err.path[0],
       })))
     }
     toast.error({
-      title: `Error ${isUpdate ? 'updating' : 'creating'} board`,
+      title: `Error ${boardId.value ? 'updating' : 'creating'} board`,
       description: error.data?.message || 'An unknown error occurred',
     })
   }
@@ -69,23 +60,20 @@ const handleSubmit = async (
   }
 }
 
-const isCanDelete = computed(() => currentBoardId.value)
 const isDeleteLoading = ref(false)
 const handleDelete = async () => {
-  if (!currentBoardId.value)
-    return
   try {
     isDeleteLoading.value = true
-    await $fetch(`/api/boards/${currentBoardId.value}`, {
+    await $fetch(`/api/boards/${boardId.value}`, {
       method: 'DELETE',
     })
     toast.success({
       title: 'Board was delete successful',
     })
     isCreateBoardOpen.value = false
-    useEvent('refresh-boards')
+    refreshNuxtData(FETCH_BOARD_KEY)
   }
-  catch (error) {
+  catch (error: any) {
     toast.error({
       title: 'Error deleting board',
       description: error.data?.message || 'An unknown error occurred',
@@ -96,14 +84,17 @@ const handleDelete = async () => {
   }
 }
 
-const show = (initialValue?: InitialValue) => {
+export type initialValue = SchemaInfer & {
+  _id: string
+}
+const show = (initialValue?: initialValue) => {
   if (initialValue) {
-    currentBoardId.value = initialValue._id
+    boardId.value = initialValue._id
     formState.value.name = initialValue.name
     formState.value.coverImage = initialValue.coverImage
   }
   else {
-    currentBoardId.value = undefined
+    boardId.value = undefined
     formState.value = { ...INITIAL_FORM_STATE }
   }
   isCreateBoardOpen.value = true
@@ -118,10 +109,10 @@ defineExpose({
   <USlideover v-model="isCreateBoardOpen">
     <UCard v-bind="cardProps">
       <template #header>
-        {{ slideOverTitle }}
+        {{ boardId ? 'Update board' : 'Create board' }}
       </template>
       <UForm
-        :ref="FORM_REF_NAME"
+        ref="formRef"
         :schema="formSchema"
         :state="formState"
         class="space-y-4"
@@ -138,7 +129,7 @@ defineExpose({
       <template #footer>
         <div class="flex gap-2">
           <UButton
-            v-if="isCanDelete"
+            v-if="boardId"
             type="button"
             color="red"
             block

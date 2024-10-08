@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SLIDE_CONTROLLER_PROVIDE_NAME } from '~/constant'
+import { FETCH_BOARD_KEY, SLIDE_CONTROLLER_PROVIDE_NAME } from '~/constant'
 import type { BoardDocument } from '~/server/models/Board'
 import type { SlideController } from '~/types'
 
@@ -9,26 +9,23 @@ useHead({
 
 const router = useRouter()
 const slideController = inject<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME)
-const { data, refresh } = await useFetch<BoardDocument[]>('/api/boards')
-useListen('refresh-boards', refresh)
+const { data } = await useFetch<BoardDocument[]>('/api/boards', {
+  key: FETCH_BOARD_KEY,
+})
 </script>
 
 <template>
   <UContainer>
     <section class="grid grid-cols-4 gap-4">
       <BoardCard
-        v-for="board in data as BoardDocument[]"
-        :key="board._id"
+        v-for="board in data"
+        :key="board._id.toString()"
         :name="board.name"
         :cover-image="board.coverImage"
         class="cursor-pointer"
         @on-edit="slideController?.handleEditBoard(board)"
-        @click="router.push({ name: 'boardId', params: { boardId: board._id } })"
+        @click="router.push({ name: 'boardId', params: { boardId: board._id.toString() } })"
       />
     </section>
   </UContainer>
 </template>
-
-<style scoped>
-
-</style>

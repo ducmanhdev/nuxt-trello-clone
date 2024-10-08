@@ -25,7 +25,7 @@ const lists = computed(() => data.value?.lists as ListDocument[])
 </script>
 
 <template>
-  <section>
+  <section class="py-8">
     <UContainer>
       <ListContainer
         :lists="lists"

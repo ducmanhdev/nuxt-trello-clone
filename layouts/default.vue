@@ -59,7 +59,7 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
 
 <template>
   <div>
-    <header class="py-4">
+    <header class="py-4 shadow">
       <UContainer class="flex justify-between items-center">
         <RouterLink to="/">
           TRELLO

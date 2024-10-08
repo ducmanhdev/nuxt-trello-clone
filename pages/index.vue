@@ -15,21 +15,23 @@ const { data } = await useFetch<BoardDocument[]>('/api/boards', {
 </script>
 
 <template>
-  <UContainer>
-    <section class="grid grid-cols-4 gap-4">
-      <BoardCard
-        v-for="board in data"
-        :key="board._id.toString()"
-        :name="board.name"
-        :cover-image="board.coverImage"
-        class="cursor-pointer"
-        @on-edit="slideController?.handleEditBoard({
-          _id: board._id.toString(),
-          name: board.name,
-          coverImage: board.coverImage,
-        })"
-        @click="router.push({ name: 'boardId', params: { boardId: board._id.toString() } })"
-      />
-    </section>
-  </UContainer>
+  <section class="py-8">
+    <UContainer>
+      <div class="grid grid-cols-4 gap-4">
+        <BoardCard
+          v-for="board in data"
+          :key="board._id.toString()"
+          :name="board.name"
+          :cover-image="board.coverImage"
+          class="cursor-pointer"
+          @on-edit="slideController?.handleEditBoard({
+            _id: board._id.toString(),
+            name: board.name,
+            coverImage: board.coverImage,
+          })"
+          @click="router.push({ name: 'boardId', params: { boardId: board._id.toString() } })"
+        />
+      </div>
+    </UContainer>
+  </section>
 </template>

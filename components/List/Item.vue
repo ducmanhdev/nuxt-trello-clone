@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { LazySlideCard } from '#components'
 import draggable from 'vuedraggable'
-import SlideCard from '~/components/Slide/Card.vue'
 import { SLIDE_CONTROLLER_PROVIDE_NAME } from '~/constant'
 import type { CardDocument } from '~/server/models/Card'
 import type { ListDocument } from '~/server/models/List'
@@ -39,16 +39,16 @@ const handleCardChange = async (e: any) => {
     })
     await refreshCards()
   }
-  catch (e: any) {
+  catch (error: any) {
     toast.error({
       title: 'Error',
-      description: e.message || 'Something went wrong',
+      description: error.message || 'Something went wrong',
     })
   }
 }
 
-const slideCardRef = ref<InstanceType<typeof SlideCard>>()
-const handleSetSlideCardRef = el => slideCardRef.value = el
+const slideCardRef = ref<InstanceType<typeof LazySlideCard>>()
+const handleSetSlideCardRef = (el: any) => slideCardRef.value = el
 </script>
 
 <template>
@@ -66,7 +66,11 @@ const handleSetSlideCardRef = el => slideCardRef.value = el
             icon="ion:settings"
             variant="ghost"
             class="ignore-drag"
-            @click.stop="slideController?.handleEditList(list)"
+            @click.stop="slideController?.handleEditList({
+              _id: list._id.toString(),
+              board: list.board,
+              name: list.name,
+            })"
           />
         </UTooltip>
       </div>
@@ -88,7 +92,11 @@ const handleSetSlideCardRef = el => slideCardRef.value = el
         <div>
           <ListCard
             :card="element"
-            @click="slideCardRef?.show(props.list._id, element._id, element)"
+            @click="slideCardRef?.show({
+              listId: props.list._id.toString(),
+              _id: element._id,
+              name: element.name,
+            })"
           />
         </div>
       </template>
@@ -99,13 +107,15 @@ const handleSetSlideCardRef = el => slideCardRef.value = el
         icon="ion:add"
         label="Add card"
         variant="ghost"
-        @click="slideCardRef?.show(props.list._id)"
+        @click="slideCardRef?.show({
+          listId: props.list._id.toString(),
+        })"
       />
     </template>
   </UCard>
 
   <Teleport to="body">
-    <SlideCard
+    <LazySlideCard
       :ref="handleSetSlideCardRef"
       @refresh="refreshCards()"
     />

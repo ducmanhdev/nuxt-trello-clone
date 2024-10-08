@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types'
-import type { Schema } from 'mongoose'
+import type { Form, FormSubmitEvent } from '#ui/types'
 import type { z } from 'zod'
 import CardSchema from '~/schemas/Card.schema'
 
@@ -8,28 +7,23 @@ const emit = defineEmits<{
   (e: 'refresh'): void
 }>()
 
-const formSchema = CardSchema.omit({
-  list: true,
-})
-
-export type InitialValue = z.infer<typeof formSchema>
 const cardProps = useCardProps()
 const toast = useCustomToast()
 
-const currentListId = ref<Schema.Types.ObjectId>(undefined)
-const currentCardId = ref<Schema.Types.ObjectId>(undefined)
-const slideOverTitle = computed(() => {
-  return currentCardId.value ? 'Update card' : 'Create card'
+const isOpen = ref(false)
+
+const listId = ref<string>()
+const cardId = ref<string>()
+
+const formSchema = CardSchema.omit({
+  list: true,
 })
-
-const INITIAL_FORM_STATE: InitialValue = {
-  name: undefined,
+type SchemaInfer = z.infer<typeof formSchema>
+const INITIAL_FORM_STATE: SchemaInfer = {
+  name: '',
 }
-const formState = ref<InitialValue>({ ...INITIAL_FORM_STATE })
-
-const FORM_REF_NAME = 'CARD_FORM'
-const formRef = useTemplateRef(FORM_REF_NAME)
-const isCreateBoardOpen = ref(false)
+const formState = ref<SchemaInfer>({ ...INITIAL_FORM_STATE })
+const formRef = ref<Form<SchemaInfer>>()
 
 const isSubmitLoading = ref(false)
 const handleSubmit = async (
@@ -37,33 +31,33 @@ const handleSubmit = async (
 ) => {
   try {
     isSubmitLoading.value = true
-    if (currentCardId.value) {
-      await $fetch(`/api/lists/${currentListId.value}/cards/${currentCardId.value}`, {
+    if (cardId.value) {
+      await $fetch(`/api/lists/${listId.value}/cards/${cardId.value}`, {
         method: 'PATCH',
         body: event.data,
       })
     }
     else {
-      await $fetch(`/api/lists/${currentListId.value}/cards`, {
+      await $fetch(`/api/lists/${listId.value}/cards`, {
         method: 'POST',
         body: event.data,
       })
     }
     toast.success({
-      title: `Card was ${currentCardId.value ? 'updated' : 'created'} successful`,
+      title: `Card was ${cardId.value ? 'updated' : 'created'} successful`,
     })
-    isCreateBoardOpen.value = false
+    isOpen.value = false
     emit('refresh')
   }
-  catch (error) {
+  catch (error: any) {
     if (error.statusMessage === 'Validation Error' && error.data?.data?.issues) {
-      return formRef.value?.setErrors(error.data.data.issues.map(err => ({
+      return formRef.value?.setErrors(error.data.data.issues.map((err: any) => ({
         message: err.message,
         path: err.path[0],
       })))
     }
     toast.error({
-      title: `Error ${isUpdate ? 'updating' : 'creating'} card`,
+      title: `Error ${cardId.value ? 'updating' : 'creating'} card`,
       description: error.data?.message || 'An unknown error occurred',
     })
   }
@@ -74,22 +68,20 @@ const handleSubmit = async (
 
 const isDeleteLoading = ref(false)
 const handleDelete = async () => {
-  if (!currentListId.value)
-    return
   try {
     isDeleteLoading.value = true
-    await $fetch(`/api/lists/${currentListId.value}/cards/${currentCardId.value}`, {
+    await $fetch(`/api/lists/${listId.value}/cards/${cardId.value}`, {
       method: 'DELETE',
     })
     toast.success({
       title: 'Card was delete successful',
     })
-    isCreateBoardOpen.value = false
+    isOpen.value = false
     emit('refresh')
   }
-  catch (error) {
+  catch (error: any) {
     toast.error({
-      title: 'Error deleting board',
+      title: 'Error deleting card',
       description: error.data?.message || 'An unknown error occurred',
     })
   }
@@ -98,20 +90,15 @@ const handleDelete = async () => {
   }
 }
 
-const show = (
-  listId: typeof currentListId,
-  cardId: typeof currentCardId,
-  initialValue?: InitialValue,
-) => {
-  if (initialValue) {
-    formState.value.name = initialValue.name
-  }
-  else {
-    formState.value = { ...INITIAL_FORM_STATE }
-  }
-  currentListId.value = listId
-  currentCardId.value = cardId
-  isCreateBoardOpen.value = true
+export type InitialValue = Partial<SchemaInfer> & {
+  listId: string
+  _id?: string
+}
+const show = (initialValue: InitialValue) => {
+  listId.value = initialValue.listId
+  cardId.value = initialValue?._id ?? undefined
+  formState.value.name = initialValue?.name ?? INITIAL_FORM_STATE.name
+  isOpen.value = true
 }
 
 defineExpose({
@@ -120,27 +107,27 @@ defineExpose({
 </script>
 
 <template>
-  <USlideover v-model="isCreateBoardOpen">
+  <USlideover v-model="isOpen">
     <UCard v-bind="cardProps">
       <template #header>
-        {{ slideOverTitle }}
+        {{ cardId ? 'Update card' : 'Create card' }}
       </template>
       <UForm
-        :ref="FORM_REF_NAME"
+        ref="formRef"
         :schema="formSchema"
         :state="formState"
         class="space-y-4"
         :validate-on="['submit']"
         @submit="handleSubmit"
       >
-        <UFormGroup label="Card name" name="name">
+        <UFormGroup label="Name" name="name">
           <UInput v-model="formState.name" />
         </UFormGroup>
       </UForm>
       <template #footer>
         <div class="flex gap-2">
           <UButton
-            v-if="currentCardId"
+            v-if="cardId"
             type="button"
             color="red"
             block

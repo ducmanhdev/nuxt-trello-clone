@@ -23,7 +23,11 @@ const { data } = await useFetch<BoardDocument[]>('/api/boards', {
         :name="board.name"
         :cover-image="board.coverImage"
         class="cursor-pointer"
-        @on-edit="slideController?.handleEditBoard(board)"
+        @on-edit="slideController?.handleEditBoard({
+          _id: board._id.toString(),
+          name: board.name,
+          coverImage: board.coverImage,
+        })"
         @click="router.push({ name: 'boardId', params: { boardId: board._id.toString() } })"
       />
     </section>

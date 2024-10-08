@@ -45,7 +45,7 @@ const handleSelectImage = (imageUrl: string) => {
 
 <template>
   <ol
-    v-if="data.hits"
+    v-if="data?.hits"
     class="grid grid-cols-3 gap-2 overflow-y-auto h-96 p-1"
   >
     <li

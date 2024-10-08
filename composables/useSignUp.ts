@@ -8,7 +8,7 @@ export const useSignUp = () => {
 
   type InferSchema = z.infer<typeof SignupSchema>
   const formRef = ref<Form<InferSchema>>()
-  const handleSetFormRef = (el: Form<InferSchema>) => formRef.value = el
+  const handleSetFormRef = (el: any) => formRef.value = el
 
   const formState = ref({
     name: undefined,

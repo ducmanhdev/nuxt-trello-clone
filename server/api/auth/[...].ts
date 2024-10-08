@@ -13,7 +13,7 @@ export default NuxtAuthHandler({
     signIn: '/auth/sign-in',
   },
   providers: [
-    CredentialsProvider.default({
+    (CredentialsProvider as any).default({
       name: 'credentials',
       async authorize(credential: { email: string, password: string }) {
         const user = await User.findOne({ email: credential.email })
@@ -50,7 +50,7 @@ export default NuxtAuthHandler({
     },
 
     async session({ session, token }) {
-      const refreshedUser = await getUser(token._id)
+      const refreshedUser = await getUser(token._id as string)
 
       session.user = {
         ...token,

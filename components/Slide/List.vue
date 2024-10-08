@@ -1,41 +1,36 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types'
-import type { Schema } from 'mongoose'
+import type { Form, FormSubmitEvent } from '#ui/types'
 import type { z } from 'zod'
+import { FETCH_LIST_KEY } from '~/constant'
 import ListSchema from '~/schemas/List.schema'
-
-export type InitialValue = z.infer<typeof ListSchema> & {
-  _id: Schema.Types.ObjectId
-}
 
 const cardProps = useCardProps()
 const toast = useCustomToast()
 
-const currentListId = ref<Schema.Types.ObjectId>(undefined)
-const slideOverTitle = computed(() => {
-  return currentListId.value ? 'Update list' : 'Create list'
+const isOpen = ref(false)
+
+const listId = ref<string>()
+
+const formSchema = ListSchema.omit({
+  cards: true,
 })
 
-const INITIAL_FORM_STATE = {
-  name: undefined,
-  board: undefined,
+type SchemaInfer = z.infer<typeof formSchema>
+const INITIAL_FORM_STATE: SchemaInfer = {
+  name: '',
+  board: '',
 }
-const formState = ref({ ...INITIAL_FORM_STATE })
-
-const FORM_REF_NAME = 'LIST_FORM'
-const formRef = useTemplateRef(FORM_REF_NAME)
-const formSchema = ListSchema
-const isCreateBoardOpen = ref(false)
+const formState = ref<SchemaInfer>({ ...INITIAL_FORM_STATE })
+const formRef = ref<Form<SchemaInfer>>()
 
 const isSubmitLoading = ref(false)
 const handleSubmit = async (
   event: FormSubmitEvent<z.output<typeof formSchema>>,
 ) => {
-  const isUpdate = currentListId.value
   try {
     isSubmitLoading.value = true
-    if (isUpdate) {
-      await $fetch(`/api/lists/${currentListId.value}`, {
+    if (listId.value) {
+      await $fetch(`/api/lists/${listId.value}`, {
         method: 'PATCH',
         body: event.data,
       })
@@ -47,20 +42,20 @@ const handleSubmit = async (
       })
     }
     toast.success({
-      title: `List was ${isUpdate ? 'updated' : 'created'} successful`,
+      title: `List was ${listId.value ? 'updated' : 'created'} successful`,
     })
-    isCreateBoardOpen.value = false
-    useEvent('refresh-lists')
+    isOpen.value = false
+    refreshNuxtData(FETCH_LIST_KEY)
   }
-  catch (error) {
+  catch (error: any) {
     if (error.statusMessage === 'Validation Error' && error.data?.data?.issues) {
-      return formRef.value?.setErrors(error.data.data.issues.map(err => ({
+      return formRef.value?.setErrors(error.data.data.issues.map((err: any) => ({
         message: err.message,
         path: err.path[0],
       })))
     }
     toast.error({
-      title: `Error ${isUpdate ? 'updating' : 'creating'} list`,
+      title: `Error ${listId.value ? 'updating' : 'creating'} list`,
       description: error.data?.message || 'An unknown error occurred',
     })
   }
@@ -69,25 +64,22 @@ const handleSubmit = async (
   }
 }
 
-const isCanDelete = computed(() => currentListId.value)
 const isDeleteLoading = ref(false)
 const handleDelete = async () => {
-  if (!currentListId.value)
-    return
   try {
     isDeleteLoading.value = true
-    await $fetch(`/api/lists/${currentListId.value}`, {
+    await $fetch(`/api/lists/${listId.value}`, {
       method: 'DELETE',
     })
     toast.success({
       title: 'List was delete successful',
     })
-    isCreateBoardOpen.value = false
-    useEvent('refresh-lists')
+    isOpen.value = false
+    refreshNuxtData(FETCH_LIST_KEY)
   }
-  catch (error) {
+  catch (error: any) {
     toast.error({
-      title: 'Error deleting board',
+      title: 'Error deleting list',
       description: error.data?.message || 'An unknown error occurred',
     })
   }
@@ -96,17 +88,17 @@ const handleDelete = async () => {
   }
 }
 
-const show = (initialValue?: InitialValue) => {
-  if (initialValue) {
-    currentListId.value = initialValue._id
-    formState.value.name = initialValue.name
-    formState.value.board = initialValue.board
-  }
-  else {
-    currentListId.value = undefined
-    formState.value = { ...INITIAL_FORM_STATE }
-  }
-  isCreateBoardOpen.value = true
+export type InitialValue = Partial<SchemaInfer & {
+  _id: string
+}> & {
+  board: string
+}
+
+const show = (initialValue: InitialValue) => {
+  listId.value = initialValue?._id ?? undefined
+  formState.value.name = initialValue?.name ?? INITIAL_FORM_STATE.name
+  formState.value.board = initialValue.board
+  isOpen.value = true
 }
 
 defineExpose({
@@ -115,27 +107,27 @@ defineExpose({
 </script>
 
 <template>
-  <USlideover v-model="isCreateBoardOpen">
+  <USlideover v-model="isOpen">
     <UCard v-bind="cardProps">
       <template #header>
-        {{ slideOverTitle }}
+        {{ listId ? 'Update list' : 'Create list' }}
       </template>
       <UForm
-        :ref="FORM_REF_NAME"
+        ref="formRef"
         :schema="formSchema"
         :state="formState"
         class="space-y-4"
         :validate-on="['submit']"
         @submit="handleSubmit"
       >
-        <UFormGroup label="List name" name="name">
+        <UFormGroup label="Name" name="name">
           <UInput v-model="formState.name" />
         </UFormGroup>
       </UForm>
       <template #footer>
         <div class="flex gap-2">
           <UButton
-            v-if="isCanDelete"
+            v-if="listId"
             type="button"
             color="red"
             block
@@ -159,7 +151,3 @@ defineExpose({
     </UCard>
   </USlideover>
 </template>
-
-<style scoped>
-
-</style>

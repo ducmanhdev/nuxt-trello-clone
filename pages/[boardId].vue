@@ -1,12 +1,14 @@
 <script lang="ts" setup>
+import { FETCH_LIST_KEY } from '~/constant'
 import type { BoardDocument } from '~/server/models/Board'
 import type { ListDocument } from '~/server/models/List'
 
 const route = useRoute()
 const { boardId } = route.params
 
-const { data, refresh } = await useFetch<BoardDocument>(`/api/boards/${boardId}`)
-useListen('refresh-lists', refresh)
+const { data } = await useFetch<BoardDocument>(`/api/boards/${boardId}`, {
+  key: FETCH_LIST_KEY,
+})
 
 if (!data.value) {
   throw createError({
@@ -19,7 +21,7 @@ useHead({
   title: data.value.name,
 })
 
-const lists = computed<ListDocument[]>(() => data.value.lists)
+const lists = computed(() => data.value?.lists as ListDocument[])
 </script>
 
 <template>
@@ -27,7 +29,7 @@ const lists = computed<ListDocument[]>(() => data.value.lists)
     <UContainer>
       <ListContainer
         :lists="lists"
-        :board-id="boardId"
+        :board-id="boardId as string"
       />
     </UContainer>
   </section>

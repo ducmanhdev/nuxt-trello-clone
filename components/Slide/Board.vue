@@ -7,16 +7,18 @@ import BoardSchema from '~/schemas/Board.schema'
 const cardProps = useCardProps()
 const toast = useCustomToast()
 
-const isCreateBoardOpen = ref(false)
+const isOpen = ref(false)
 
 const boardId = ref<string>()
-type SchemaInfer = z.infer<typeof BoardSchema>
+
+const formSchema = BoardSchema
+
+type SchemaInfer = z.infer<typeof formSchema>
 const INITIAL_FORM_STATE: SchemaInfer = {
   name: '',
   coverImage: '',
 }
 const formState = ref<SchemaInfer>({ ...INITIAL_FORM_STATE })
-const formSchema = BoardSchema
 const formRef = ref<Form<SchemaInfer>>()
 
 const isSubmitLoading = ref(false)
@@ -40,7 +42,7 @@ const handleSubmit = async (
     toast.success({
       title: `Board was ${boardId.value ? 'updated' : 'created'} successful`,
     })
-    isCreateBoardOpen.value = false
+    isOpen.value = false
     refreshNuxtData(FETCH_BOARD_KEY)
   }
   catch (error: any) {
@@ -70,7 +72,7 @@ const handleDelete = async () => {
     toast.success({
       title: 'Board was delete successful',
     })
-    isCreateBoardOpen.value = false
+    isOpen.value = false
     refreshNuxtData(FETCH_BOARD_KEY)
   }
   catch (error: any) {
@@ -84,20 +86,14 @@ const handleDelete = async () => {
   }
 }
 
-export type initialValue = SchemaInfer & {
+export type InitialValue = SchemaInfer & {
   _id: string
 }
-const show = (initialValue?: initialValue) => {
-  if (initialValue) {
-    boardId.value = initialValue._id
-    formState.value.name = initialValue.name
-    formState.value.coverImage = initialValue.coverImage
-  }
-  else {
-    boardId.value = undefined
-    formState.value = { ...INITIAL_FORM_STATE }
-  }
-  isCreateBoardOpen.value = true
+const show = (initialValue?: InitialValue) => {
+  boardId.value = initialValue?._id ?? undefined
+  formState.value.name = initialValue?.name ?? INITIAL_FORM_STATE.name
+  formState.value.coverImage = initialValue?.coverImage ?? INITIAL_FORM_STATE.coverImage
+  isOpen.value = true
 }
 
 defineExpose({
@@ -106,7 +102,7 @@ defineExpose({
 </script>
 
 <template>
-  <USlideover v-model="isCreateBoardOpen">
+  <USlideover v-model="isOpen">
     <UCard v-bind="cardProps">
       <template #header>
         {{ boardId ? 'Update board' : 'Create board' }}
@@ -119,7 +115,7 @@ defineExpose({
         :validate-on="['submit']"
         @submit="handleSubmit"
       >
-        <UFormGroup label="Board name" name="name">
+        <UFormGroup label="Name" name="name">
           <UInput v-model="formState.name" />
         </UFormGroup>
         <UFormGroup label="Cover image" name="coverImage">

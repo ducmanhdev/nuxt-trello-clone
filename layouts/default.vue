@@ -40,13 +40,13 @@ const route = useRoute()
 const currentBoardId = computed(() => route.params.boardId)
 
 const slideBoardRef = ref<InstanceType<typeof LazySlideBoard>>()
-const handleSetEditBoardRef = el => slideBoardRef.value = el
+const handleSetEditBoardRef = (el: any) => slideBoardRef.value = el
 const handleEditBoard: SlideController['handleEditBoard'] = (arg) => {
   slideBoardRef.value?.show(arg)
 }
 
 const slideListRef = ref<InstanceType<typeof LazySlideList>>()
-const handleSetEditListRef = el => slideListRef.value = el
+const handleSetEditListRef = (el: any) => slideListRef.value = el
 const handleEditList: SlideController['handleEditList'] = (arg) => {
   slideListRef.value?.show(arg)
 }
@@ -72,7 +72,7 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
             variant="solid"
             label="Create list"
             @click="slideListRef?.show({
-              board: currentBoardId,
+              board: currentBoardId as string,
             })"
           />
           <UButton

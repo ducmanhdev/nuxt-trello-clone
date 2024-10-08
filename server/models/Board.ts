@@ -1,8 +1,7 @@
-import type { Document, Types } from 'mongoose'
 import type { ListDocument } from './List'
-import { model, Schema } from 'mongoose'
+import { type Document, model, Schema } from 'mongoose'
 
-export interface BoardDocument extends Document<Types.ObjectId> {
+export interface BoardDocument extends Document<Schema.Types.ObjectId> {
   name: string
   lists: Schema.Types.ObjectId[] | ListDocument[]
   owner: string

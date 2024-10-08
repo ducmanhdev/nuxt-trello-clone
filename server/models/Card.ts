@@ -1,6 +1,6 @@
 import { type Document, model, Schema } from 'mongoose'
 
-export interface CardDocument extends Document {
+export interface CardDocument extends Document<Schema.Types.ObjectId> {
   name: string
   owner: string
   list: string

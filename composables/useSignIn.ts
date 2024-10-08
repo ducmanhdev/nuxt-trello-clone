@@ -20,14 +20,15 @@ export const useSignIn = () => {
     try {
       isSubmitLoading.value = true
 
-      const { error } = await signIn('credentials', {
+      type SignInResult = Awaited<ReturnType<typeof signIn>>
+      const result: SignInResult = await signIn('credentials', {
         redirect: false,
         email: event.data.email,
         password: event.data.password,
       })
 
-      if (error) {
-        throw new Error(error)
+      if (result?.error) {
+        throw new Error(result?.error)
       }
 
       await router.push('/')

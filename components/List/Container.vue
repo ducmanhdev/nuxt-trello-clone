@@ -17,7 +17,7 @@ const handleSort = async () => {
       },
     })
   }
-  catch (error) {
+  catch (error: any) {
     toast.error({
       title: 'Error',
       description: error.data?.message || 'An unknown error occurred',

@@ -17,7 +17,6 @@ const isDark = computed({
 })
 
 const { data, signOut } = useAuth()
-console.log(data.value);
 
 const isUserHasSubscripton = computed(() => (data.value?.user as UserDocument)?.hasActiveSubscription)
 

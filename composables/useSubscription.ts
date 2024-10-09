@@ -11,7 +11,7 @@ export const useSubscription = () => {
       })
 
       if (data) {
-        window.open(data, '_blank')
+        window.location.href = data
       }
     }
     catch (e: any) {

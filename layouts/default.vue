@@ -4,7 +4,8 @@ import { SLIDE_CONTROLLER_PROVIDE_NAME } from '~/constant'
 import type { UserDocument } from '~/server/models/User'
 import type { SlideController } from '~/types'
 
-const { handleSubscribe, handleAccessPortal } = useSubscription()
+const { handleAccessPortal } = useSubscription()
+const { handleShow: handleShowSubscribeModal } = useSubscriptionModal()
 
 const colorMode = useColorMode()
 const isDark = computed({
@@ -105,7 +106,7 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
             color="yellow"
             :disabled="isUserHasSubscripton"
             icon="ion:ios-star-outline"
-            @click="handleSubscribe"
+            @click="handleShowSubscribeModal"
           />
           <ClientOnly>
             <UButton
@@ -138,6 +139,7 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
       <LazySlideBoard :ref="handleSetEditBoardRef" />
       <LazySlideList :ref="handleSetEditListRef" />
       <LazyModalConfirm />
+      <LazyModalSubscribe />
     </Teleport>
   </div>
 </template>

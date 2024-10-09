@@ -135,11 +135,13 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
       <slot />
     </main>
 
-    <Teleport to="body">
-      <LazySlideBoard :ref="handleSetEditBoardRef" />
-      <LazySlideList :ref="handleSetEditListRef" />
-      <LazyModalConfirm />
-      <LazyModalSubscribe />
-    </Teleport>
+    <ClientOnly>
+      <Teleport to="body">
+        <LazySlideBoard :ref="handleSetEditBoardRef" />
+        <LazySlideList :ref="handleSetEditListRef" />
+        <LazyModalConfirm />
+        <LazyModalSubscribe />
+      </Teleport>
+    </ClientOnly>
   </div>
 </template>

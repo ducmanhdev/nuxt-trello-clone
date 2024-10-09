@@ -20,27 +20,38 @@ const { data, signOut } = useAuth()
 
 const isUserHasSubscripton = computed(() => (data.value?.user as UserDocument)?.hasActiveSubscription)
 
-const userDropdownItems = [
-  [
-    {
-      label: 'Profile',
-      avatar: {
-        src: 'https://avatars.githubusercontent.com/u/739984?v=4',
+const userDropdownItems = computed(() => {
+  return [
+    [
+      {
+        label: 'Profile',
+        avatar: {
+          src: 'https://avatars.githubusercontent.com/u/739984?v=4',
+        },
       },
-    },
-    {
-      label: 'Settings',
-      icon: 'ion:ios-settings',
-    },
-  ],
-  [
-    {
-      label: 'Sign out',
-      icon: 'ion:log-out-outline',
-      click: signOut,
-    },
-  ],
-]
+      {
+        label: 'Settings',
+        icon: 'ion:ios-settings',
+      },
+    ],
+    ...(isUserHasSubscripton.value
+      ? [[
+          {
+            label: 'Billing',
+            icon: 'ion:receipt-outline',
+            click: handleAccessPortal,
+          },
+        ]]
+      : []),
+    [
+      {
+        label: 'Sign out',
+        icon: 'ion:log-out-outline',
+        click: signOut,
+      },
+    ],
+  ]
+})
 
 const route = useRoute()
 const currentBoardId = computed(() => route.params.boardId)

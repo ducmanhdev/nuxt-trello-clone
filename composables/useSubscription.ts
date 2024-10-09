@@ -11,7 +11,7 @@ export const useSubscription = () => {
       })
 
       if (data) {
-        window.location.href = data
+        window.open(data, '_blank')
       }
     }
     catch (e: any) {
@@ -31,7 +31,7 @@ export const useSubscription = () => {
       const data = await $fetch(`/api/users/access-portal`)
 
       if (data) {
-        window.location.href = data
+        window.open(data, '_blank')
       }
     }
     catch (e: any) {
@@ -46,7 +46,7 @@ export const useSubscription = () => {
   }
 
   return {
-    isLoading,
+    isLoading: readonly(isLoading),
     handleSubscribe,
     handleAccessPortal,
   }

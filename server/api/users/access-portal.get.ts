@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
   const portal = await stripe().billingPortal.sessions.create({
     customer: user.stripeCustomerId,
-    return_url: config.auth.origin,
+    return_url: config.authOrigin,
   })
 
   return portal.url

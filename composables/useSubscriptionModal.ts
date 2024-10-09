@@ -1,7 +1,6 @@
 export const useSubscriptionModal = () => {
   const { handleSubscribe } = useSubscription()
 
-  const price = useState(() => 5)
   const isOpen = useState(() => false)
   const isActionLoading = useState(() => false)
 
@@ -23,7 +22,6 @@ export const useSubscriptionModal = () => {
     isOpen.value = false
   }
   return {
-    price: readonly(price),
     isOpen,
     handleShow,
     isActionLoading: readonly(isActionLoading),

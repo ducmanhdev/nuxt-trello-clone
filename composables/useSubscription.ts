@@ -1,6 +1,20 @@
 export const useSubscription = () => {
   const toast = useCustomToast()
 
+  const pricing = useState(() => 0)
+  const { data, error } = useFetch('/api/subscribe-pricing')
+
+  watch(data, () => {
+    pricing.value = centsToDollars(data.value?.unit_amount || 0)
+  })
+
+  if (error.value) {
+    toast.error({
+      title: 'Error',
+      description: 'Failed to fetch pricing',
+    })
+  }
+
   const isLoading = ref(false)
 
   const handleSubscribe = async () => {
@@ -47,6 +61,7 @@ export const useSubscription = () => {
 
   return {
     isLoading: readonly(isLoading),
+    pricing: readonly(pricing),
     handleSubscribe,
     handleAccessPortal,
   }

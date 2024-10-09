@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { price, isOpen, cancelAction, confirmAction, isActionLoading } = useSubscriptionModal()
+const { isOpen, cancelAction, confirmAction, isActionLoading } = useSubscriptionModal()
+const { pricing } = useSubscription()
 </script>
 
 <template>
@@ -11,7 +12,7 @@ const { price, isOpen, cancelAction, confirmAction, isActionLoading } = useSubsc
 
       <div class="text-center">
         <p class="mb-4 text-5xl text-yellow-500 font-bold">
-          ${{ price }}
+          ${{ pricing }}
         </p>
         <p class="mb-4 text-xl">
           Unlock all premium features

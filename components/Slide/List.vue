@@ -64,15 +64,16 @@ const handleSubmit = async (
   }
 }
 
+const { handleConfirm } = useConfirmModal()
 const isDeleteLoading = ref(false)
-const handleDelete = async () => {
+const handleDelete = () => handleConfirm(async () => {
   try {
     isDeleteLoading.value = true
     await $fetch(`/api/lists/${listId.value}`, {
       method: 'DELETE',
     })
     toast.success({
-      title: 'List was delete successful',
+      title: 'List was deleted successful',
     })
     isOpen.value = false
     refreshNuxtData(FETCH_LIST_KEY)
@@ -86,7 +87,7 @@ const handleDelete = async () => {
   finally {
     isDeleteLoading.value = false
   }
-}
+})
 
 export type InitialValue = Partial<SchemaInfer & {
   _id: string

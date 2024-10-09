@@ -126,6 +126,7 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
     <Teleport to="body">
       <LazySlideBoard :ref="handleSetEditBoardRef" />
       <LazySlideList :ref="handleSetEditListRef" />
+      <LazyModalConfirm />
     </Teleport>
   </div>
 </template>

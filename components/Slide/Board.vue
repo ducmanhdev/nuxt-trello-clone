@@ -62,15 +62,16 @@ const handleSubmit = async (
   }
 }
 
+const { handleConfirm } = useConfirmModal()
 const isDeleteLoading = ref(false)
-const handleDelete = async () => {
+const handleDelete = () => handleConfirm(async () => {
   try {
     isDeleteLoading.value = true
     await $fetch(`/api/boards/${boardId.value}`, {
       method: 'DELETE',
     })
     toast.success({
-      title: 'Board was delete successful',
+      title: 'Board was deleted successful',
     })
     isOpen.value = false
     refreshNuxtData(FETCH_BOARD_KEY)
@@ -84,7 +85,7 @@ const handleDelete = async () => {
   finally {
     isDeleteLoading.value = false
   }
-}
+})
 
 export type InitialValue = SchemaInfer & {
   _id: string

@@ -66,15 +66,16 @@ const handleSubmit = async (
   }
 }
 
+const { handleConfirm } = useConfirmModal()
 const isDeleteLoading = ref(false)
-const handleDelete = async () => {
+const handleDelete = () => handleConfirm(async () => {
   try {
     isDeleteLoading.value = true
     await $fetch(`/api/lists/${listId.value}/cards/${cardId.value}`, {
       method: 'DELETE',
     })
     toast.success({
-      title: 'Card was delete successful',
+      title: 'Card was deleted successful',
     })
     isOpen.value = false
     emit('refresh')
@@ -88,7 +89,7 @@ const handleDelete = async () => {
   finally {
     isDeleteLoading.value = false
   }
-}
+})
 
 export type InitialValue = Partial<SchemaInfer> & {
   listId: string

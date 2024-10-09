@@ -100,6 +100,13 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
             label="Create board"
             @click="slideBoardRef?.show()"
           />
+          <UButton
+            v-if="!isUserHasSubscripton"
+            color="yellow"
+            :disabled="isUserHasSubscripton"
+            icon="ion:ios-star-outline"
+            @click="handleSubscribe"
+          />
           <ClientOnly>
             <UButton
               :icon="isDark ? 'ion:moon' : 'ion:sunny'"
@@ -111,13 +118,6 @@ provide<SlideController>(SLIDE_CONTROLLER_PROVIDE_NAME, {
               <div class="w-8 h-8" />
             </template>
           </ClientOnly>
-          <UButton
-            variant="ghost"
-            color="yellow"
-            :disabled="isUserHasSubscripton"
-            :icon="isUserHasSubscripton ? 'ion:ios-star' : 'ion:ios-star-outline'"
-            @click="handleSubscribe"
-          />
           <UDropdown
             :items="userDropdownItems"
             :popper="{ placement: 'bottom-start' }"
